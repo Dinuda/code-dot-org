@@ -48,7 +48,20 @@ export function localizeWidgetLevel() {
     let key = $(this).data('widget-i18n');
 
     // Set the text of the element to the localized string.
-    $(this).text(i18n[key]());
+    if (i18n[key]) {
+      $(this).text(i18n[key]());
+    }
+  });
+
+  // Do the same thing but for the title text.
+  $('[data-widget-title-i18n]').each(function(el) {
+    // Get a localization key from the 'data-widget-title-i18n' attribute.
+    let key = $(this).data('widget-title-i18n');
+
+    // Set the text of the element's title attribute to the localized string.
+    if (i18n[key]) {
+      $(this).prop('title', i18n[key]());
+    }
   });
 }
 
