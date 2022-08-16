@@ -38,6 +38,20 @@ function setupWidgetLevel() {
   window.options = appOptions.level;
 }
 
+// Find and replaces content with `data-widget-i18n` attributes with the given
+// localization strings.
+export function localizeWidgetLevel() {
+  // Since some widgets are 'html' content, they have to be patched to perform
+  // localization. (Used for at least the Pixelation widget.)
+  $('[data-widget-i18n]').each(function(el) {
+    // Get a localization key from the 'data-widget-i18n' attribute.
+    let key = $(this).data('widget-i18n');
+
+    // Set the text of the element to the localized string.
+    $(this).text(i18n[key]());
+  });
+}
+
 // Add globals
 window.CodeMirror = require('codemirror');
 window.dashboard = window.dashboard || {};
@@ -53,4 +67,7 @@ window.dashboard.widget = {
 // On load (note - widget-specific setup may happen before this!)
 $(document).ready(function() {
   $('#bubble').click(showInstructionsDialog);
+
+  // Localize any strings embedded in the widget.
+  localizeWidgetLevel();
 });

@@ -9,18 +9,18 @@
 <![endif]-->
 <div id="visualizationColumnHeader" class="responsive hide_on_v1">
   <div id="file_format">
-    <p id="file_format_title"><strong>Image File Format:</strong></p>
-    <div class="byte">Width: 1 byte</div>
-    <div class="byte">Height: 1 byte</div>
-    <div class="byte hide_on_v1 hide_on_v2">Bits per Pixel: 1 byte</div>
-    <div>n bits of pixel data<p class="hide_on_v2">n = Width * Height * Bits per Pixel</p></div>
+    <p id="file_format_title"><strong data-widget-i18n="pixelationImageFileFormatHeader">Image File Format:</strong></p>
+    <div class="byte" data-widget-i18n="pixelationImageFileFormatWidth">Width: 1 byte</div>
+    <div class="byte" data-widget-i18n="pixelationImageFileFormatHeight">Height: 1 byte</div>
+    <div class="byte hide_on_v1 hide_on_v2" data-widget-i18n="pixelationImageFileFormatBitsPerPixel">Bits per Pixel: 1 byte</div>
+    <div><p data-widget-i18n="pixelationImageFileFormatDataA">n bits of pixel data</p><p class="hide_on_v2" data-widget-i18n="pixelationImageFileFormatDataB">n = Width * Height * Bits per Pixel</p></div>
   </div>
 </div>
 <div id="visualizationEditorHeader" class="responsive">
   <table id="image_controls">
     <tr>
       <td>
-        <label for="width">Image width:</label>
+        <label for="width" data-widget-i18n="pixelationImageWidth">Image width:</label>
       </td><td>
       <input type="number" min="1" max="255" value="10" id="width" oninput="setSliders();" onchange="setMinTextValues();" disabled>
     </td><td class="hide_on_v2">
@@ -28,7 +28,7 @@
     </td>
     </tr><tr>
     <td>
-      <label for="height">Image height:</label>
+      <label for="height" data-widget-i18n="pixelationImageHeight">Image height:</label>
     </td><td>
     <input type="number" min="1" max="255" value="10" id="height" oninput="setSliders();" onchange="setMinTextValues();" disabled>
   </td><td class="hide_on_v2">
@@ -36,7 +36,7 @@
   </td>
   </tr><tr class="hide_on_v1 hide_on_v2">
     <td>
-      <label for="bitsPerPixel">Bits per pixel:</label>
+      <label for="bitsPerPixel" data-widget-i18n="pixelationBitsPerPixelHeader">Bits per pixel:</label>
     </td><td>
     <input type="number" min="1" max="24" id="bitsPerPixel" value="1" oninput="setSliders();" onchange="setMinTextValues();" disabled>
   </td><td>
@@ -45,13 +45,13 @@
   </tr>
   </table>
   <label class="right hide_on_v1 hide_on_v2">
-    Pixel format: <div id="pixel_format"></div>
+    <span data-widget-i18n="pixelationPixelFormatHeader">Pixel format:</span> <div id="pixel_format"></div>
   </label>
   <div class="label_group encoding_controls">
-    <label>Binary:
+    <label><span data-widget-i18n="pixelationBinary">Binary:</span>
       <input id="hex_to_bin" type="radio" name="binHex" value="bin" checked="checked" onchange="hexToBin(); drawGraph();" disabled>
     </label>
-    <label>Hexadecimal:
+    <label><span data-widget-i18n="pixelationHexadecimal">Hexadecimal:</span>
       <input id="bin_to_hex" type="radio" name="binHex" value="hex" onchange="binToHex(); drawGraph();" disabled>
     </label>
   </div>
@@ -62,10 +62,10 @@
     <canvas id="canvas" width="400" height="400"></canvas>
   </div>
   <div id="belowVisualization">
-    <label id="actual_size_label" class="right">Actual size:
+    <label id="actual_size_label" class="right"><span data-widget-i18n="pixelationActualSize">Actual size:</span>
       <input type="checkbox" id="actual_size" onchange="drawGraph();" disabled>
     </label>
-    <button id="save_image" class="btn" onclick="showPNG();" disabled>Save Image</button>
+    <button id="save_image" class="btn" onclick="showPNG();" disabled data-widget-i18n="pixelationSaveImage">Save Image</button>
     <div id="bubble">
       <p id="below_viz_instructions" style="display: none;"></p>
     </div>
@@ -79,9 +79,9 @@
     document.getElementById('pixel_data').onkeyup = drawGraph.bind(null, null, false, true);
   </script>
   <![endif]-->
-  <button id="readable_format" class="btn" onclick="formatBitDisplay();" title="View bits separated by pixel" disabled>Readable format</button>
-  <button id="raw_format" class="btn" onclick="unformatBits();"  title="View bits without any formatting" disabled>Raw format</button>
-  <button id="start_over" class="btn btn-danger" onclick="startOverClicked();" disabled>Start Over</button>
-  <button id="finished" class="btn btn-primary right" onclick="onFinishedButtonClick();" disabled>Finished! Continue to next stage</button>
+  <button id="readable_format" class="btn" onclick="formatBitDisplay();" title="View bits separated by pixel" disabled data-widget-i18n="pixelationReadableFormat">Readable format</button>
+  <button id="raw_format" class="btn" onclick="unformatBits();"  title="View bits without any formatting" disabled data-widget-i18n="pixelationRawFormat">Raw format</button>
+  <button id="start_over" class="btn btn-danger" onclick="startOverClicked();" disabled data-widget-i18n="startOver">Start Over</button>
+  <button id="finished" class="btn btn-primary right" onclick="onFinishedButtonClick();" disabled data-widget-i18n="next">Finished! Continue to next stage</button>
 </div>
 <script type="text/javascript" src="/pixelation/pixelation.js"></script>
