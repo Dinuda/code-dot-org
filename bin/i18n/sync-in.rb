@@ -17,24 +17,127 @@ require_relative '../animation_assets/manifest_builder'
 
 def sync_in
   puts "Sync in starting"
-  Services::I18n::CurriculumSyncUtils.sync_in
-  HocSyncUtils.sync_in
-  localize_level_and_project_content
-  localize_block_content
-  localize_animation_library
-  localize_shared_functions
-  localize_course_offerings
-  localize_docs
+  #Services::I18n::CurriculumSyncUtils.sync_in
+  #HocSyncUtils.sync_in
+  #localize_level_and_project_content
+  #localize_block_content
+  #localize_animation_library
+  #localize_shared_functions
+  #localize_course_offerings
+  localize_standards
+  #localize_docs
   puts "Copying source files"
-  I18nScriptUtils.run_bash_script "bin/i18n-codeorg/in.sh"
-  redact_level_content
-  redact_block_content
-  redact_script_and_course_content
-  localize_markdown_content
+  #I18nScriptUtils.run_bash_script "bin/i18n-codeorg/in.sh"
+  #redact_level_content
+  #redact_block_content
+  #redact_script_and_course_content
+  #localize_markdown_content
   puts "Sync in completed successfully"
 rescue => e
   puts "Sync in failed from the error: #{e}"
   raise e
+end
+
+# This function localizes the standards category descriptions
+def localize_standards
+  puts "Preparing standards content"
+  standards_content_path = File.join(I18N_SOURCE_DIR, "standards")
+  standards_content_file = File.join(standards_content_path, "frameworks.json")
+
+  # Ex: dashboard/config/standards/ai4k12-2021_categories.csv
+  #
+  # The CSV has the headers:
+  # "framework","parent","name","category","description","type".
+  # But some do not have some headers; for instance 'name'.
+  #
+  # Some standards are orphaned since the category is more descriptive or lacks
+  # a mapping to a framework via a category. The inverse is also true. Some
+  # categories have no standards and just exist on their own.
+  #
+  # The 'name' and 'description' are localizable with the category being the key.
+  # So we can generate a localization key with `#{framework}/#{category}/name`.
+  frameworks = {}
+
+  Dir.chdir(Rails.root) do
+    Standard.all.each do |standard|
+      framework = standard.framework
+      category = standard.category
+
+      puts "#{framework.shortcode}/#{category.shortcode}/#{standard.shortcode}: #{standard.description}"
+
+      # Store the framework within our file.
+      frameworks[framework.shortcode] ||= {
+        'name' => framework.name,
+        'categories' => {},
+        'standards' => {}
+      }
+      data = frameworks[framework.shortcode]
+
+      # Get the category hierarchy
+      categories = []
+      while category
+        categories << category
+        category = category.parent_category
+      end
+
+      # Go through and build out the listing
+      categories.reverse_each do |sub_category|
+        # Add the localized category type.
+        frameworks['types'] ||= {}
+        frameworks['types'][sub_category.category_type] = sub_category.category_type
+
+        # Add the category's shortcode to keep track of the standards within.
+        data['categories'] ||= {}
+        data['categories'][sub_category.shortcode] ||= {
+          'description' => sub_category.description
+        }
+        data = data['categories'][sub_category.shortcode]
+      end
+
+      # Add the standard description within the current category.
+      data['standards'] ||= {}
+      data['standards'][standard.shortcode] = {
+        'description' => standard.description
+      }
+    end
+
+    # Add every loose category
+    StandardCategory.all.each do |category|
+      framework = category.framework
+
+      # Store the framework within our file.
+      frameworks[framework.shortcode] ||= {
+        'name' => framework.name
+      }
+      data = frameworks[framework.shortcode]
+
+      # Get the category hierarchy
+      categories = []
+      while category
+        categories << category
+        category = category.parent_category
+      end
+
+      # Go through and build out the listing
+      categories.reverse_each do |sub_category|
+        # Add the localized category type.
+        frameworks['types'] ||= {}
+        frameworks['types'][sub_category.category_type] = sub_category.category_type
+
+        # Add the category's shortcode to keep track of the standards within.
+        data['categories'] ||= {}
+        data['categories'][sub_category.shortcode] ||= {
+          'description' => sub_category.description
+        }
+        data = data['categories'][sub_category.shortcode]
+      end
+    end
+  end
+
+  FileUtils.mkdir_p(standards_content_path)
+  File.open(standards_content_file, "w+") do |file|
+    file.write(JSON.pretty_generate(frameworks))
+  end
 end
 
 # This function localizes all content in studio.code.org/docs
