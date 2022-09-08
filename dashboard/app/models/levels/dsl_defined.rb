@@ -135,6 +135,7 @@ class DSLDefined < Level
 
   # Write the specified text to the dsl level definition file for this level.
   def rewrite_dsl_file(text)
+    return unless Rails.application.config.levelbuilder_mode
     File.write(file_path, (level_encrypted? ? encrypted_dsl_text(text) : text))
   end
 

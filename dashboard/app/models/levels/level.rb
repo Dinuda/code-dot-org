@@ -249,6 +249,8 @@ class Level < ApplicationRecord
   end
 
   def write_custom_level_file
+    return unless Rails.application.config.levelbuilder_mode
+
     if should_write_custom_level_file?
       file_path = Level.level_file_path(name)
       File.write(file_path, to_xml)
